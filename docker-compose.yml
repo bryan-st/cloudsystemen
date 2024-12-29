@@ -1,0 +1,55 @@
+﻿services:
+  fashionclub.api:
+    image: ${DOCKER_REGISTRY-}fashionclub-api
+    container_name: fashionclub-api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8443:443"
+      - "8080:80" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__DefaultConnection=Server=fashionclub.db,1433;Database=FCentricSmall;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+    volumes:
+    - ./certs:/https
+    depends_on:
+      - fashionclub.db
+
+  fashionclub.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: fashionclub-db
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${MSSQL_SA_PASSWORD}
+    volumes:
+      - db_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${MSSQL_SA_PASSWORD} -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      
+  fashionclub.frontend:
+    build:
+      context: ./FashionClub.frontend/fc70
+      dockerfile: Dockerfile
+      args:
+        VITE_APP_API_URL: https://fashionclub-api:8443/api
+    container_name: fashionclub-frontend
+    image: ${DOCKER_REGISTRY-}fashionclub-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_APP_API_URL=https://fashionclub-api:8443/api
+    depends_on:
+      - fashionclub.api
+
+
+volumes:
+  db_data:
