@@ -25,7 +25,7 @@ jobs:
 
     - name: Push Frontend Image
       run: |
-        docker build -t brdekrom/fashionclub-frontend:latest -f ./FashionClub/FashionClub.frontend/fc70/dockerfile ./FashionClub/FashionClub.frontend/fc70
+        docker build -t brdekrom/fashionclub-frontend:latest -f ./FashionClub/FashionClub.frontend/fc70/Dockerfile ./FashionClub/FashionClub.frontend/fc70
         docker push brdekrom/fashionclub-frontend:latest
 
     - name: Push API Image
