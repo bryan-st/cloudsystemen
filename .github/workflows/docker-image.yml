@@ -34,7 +34,7 @@ jobs:
         docker push brdekrom/fashionclub-api:latest
 
     - name: Deploy Azure
-      uses: appleboy/ssh-action@v0.5.1
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.AZURE_VM_HOST }}
         username: ${{ secrets.AZURE_VM_USERNAME }}
