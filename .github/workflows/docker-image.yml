@@ -25,13 +25,14 @@ jobs:
 
     - name: Push Frontend Image
       run: |
-        docker build -t brdekrom/fashionclub-frontend:latest -f ./FashionClub/FashionClub.frontend/fc70/Dockerfile ./FashionClub/FashionClub.frontend/fc70
+        docker build -t brdekrom/fashionclub-frontend:latest -f ./FashionClub.frontend/fc70/Dockerfile ./FashionClub.frontend/fc70
         docker push brdekrom/fashionclub-frontend:latest
 
     - name: Push API Image
       run: |
-        docker build -t brdekrom/fashionclub-api:latest -f ./FashionClub/Dockerfile ./FashionClub
+        docker build -t brdekrom/fashionclub-api:latest -f ./Dockerfile ./
         docker push brdekrom/fashionclub-api:latest
+
 
     - name: Deploy Azure
       uses: appleboy/ssh-action@master
